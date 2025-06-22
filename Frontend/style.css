@@ -200,4 +200,7 @@ body{
   margin-top: 3.4%;
   font-family: Arial, Helvetica, sans-serif;
 }
-
+/* to dynamically switch classes to the different sections to make them visible */
+.invisible-section{
+  display:none;
+}

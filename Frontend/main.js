@@ -1,4 +1,6 @@
 
+
+
 $(document).ready(function () {
   function loopText() {
     $(".text").textillate({
@@ -86,65 +88,43 @@ navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
   animate();
 });
 
-// my logic behind setting up this object for dinamic switching between various html of the body
-// let different_sections = {
-//   home: `<section id="Home">
-//   <div id="jarvis-hood">
-//     <canvas id="canvasOne" class="jarvis-soul" width="700" height="420"></canvas>
-//     <div class="square">
-//       <span class="circle"></span>
-//       <span class="circle"></span>
-//       <span class="circle"></span>
-//     </div>
-//   </div>
-//   <h1 class="text">Ask Me Any Thing!</h1>
-//   <div class="jarvis-ui">
-//     <div class="search-box">
-//       <button class="mic-btn" title="Voice Input">
-//         <!-- Mic SVG -->
-//         <svg height="24" width="24" fill="white" viewBox="0 0 24 24">
-//           <path d="M12 14a3 3 0 003-3V5a3 3 0 10-6 0v6a3 3 0 003 3z"></path>
-//           <path d="M19 11a7 7 0 01-14 0H3a9 9 0 0018 0h-2z"></path>
-//           <path d="M12 17v4m0 0h4m-4 0H8" stroke="white" stroke-width="2" stroke-linecap="round"></path>
-//         </svg>
-//       </button>
 
-//       <textarea placeholder="Ask me anything..." class="search-input"></textarea>
 
-//       <button class="search-btn" title="Search">
-//         <!-- Search SVG -->
-//         <svg height="24" width="24" fill="white" viewBox="0 0 24 24">
-//           <path d="M21 21l-4.35-4.35M10 18a8 8 0 100-16 8 8 0 000 16z" stroke="white" stroke-width="2" fill="none"
-//             stroke-linecap="round" stroke-linejoin="round" />
-//         </svg>
-//       </button>
-//     </div>
-//   </div>
-//          </section>`,
-//   listen: ` <section id="Listen">
-//              <div><p class="listen-text">hello sir!</p></div>
-//              <div id="siri-container"></div>
-//             </section>`,
-// };
-
-// // ✅ This function updates app view dynamically
-// function updateBodyWithSection(sectionName) {
-//   const container = document.getElementById("app-container");
-
-//   if (different_sections[sectionName]) {
-//     container.innerHTML = different_sections[sectionName];
-
-//     if (sectionName === "listen") {
-//       let audio = new Audio("audio/start_sound.mp3");
-//       audio.play();
+// //to dynamically change the visibility
+// // main.js
+// function showSection(sectionToShowId) {
+//   const sections = ["Home", "Listen"];
+//   sections.forEach((id) => {
+//     const section = document.getElementById(id);
+//     if (id === sectionToShowId) {
+//       section.classList.remove("invisible-section");
+//     } else {
+//       section.classList.add("invisible-section");
 //     }
-//   } else {
-//     container.innerHTML = `<section><h1>❌ "${sectionName}" not found!</h1></section>`;
-//   }
+//   });
 // }
-// updateBodyWithSection("listen");
 
-// // ✅ Expose to Python (so Python can call this)
-// eel.expose(updateBodyWithSection);
-// //to change the text of listen
+// window.showSection = showSection;
+// eel.expose(showSection);
 
+// // JS ready message to Python
+// eel.js_ready_ack(); // ← yeh chalega jaise hi DOM + JS ready ho jaye
+
+// Expose JS function to Python
+function showSection(sectionToShowId) {
+  const sections = ["Home", "Listen"];
+  sections.forEach((id) => {
+    const section = document.getElementById(id);
+    if (id === sectionToShowId) {
+      section.classList.remove("invisible-section");
+    } else {
+      section.classList.add("invisible-section");
+    }
+  });
+}
+window.showSection = showSection;
+eel.expose(showSection);
+
+// Notify Python that JS is ready
+eel.expose(js_ready_ack);
+eel.js_ready_ack();

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,28 +10,80 @@
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="resources/img/logo.ico" type="image/x-icon">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css" />
-  
+
   <title>Friday</title>
 </head>
+
 <body>
   <!-- home section was here -->
   <!-- listen section was here -->
+
   <div id="app-container">
-  <section id="Listen">
-    <div>
-      <p class="listen-text">hello sir!</p>
-    </div>
-    <div id="siri-container"></div>
-  </section>
+    <section id="Home" class="">
+      <div id="jarvis-hood">
+        <canvas id="canvasOne" class="jarvis-soul" width="700" height="420"></canvas>
+        <div class="square">
+          <span class="circle"></span>
+          <span class="circle"></span>
+          <span class="circle"></span>
+        </div>
+      </div>
+      <h1 class="text">Ask Me Any Thing!</h1>
+      <div class="jarvis-ui">
+        <div class="search-box">
+          <button class="mic-btn" title="Voice Input">
+            <!-- Mic SVG -->
+            <svg height="24" width="24" fill="white" viewBox="0 0 24 24">
+              <path d="M12 14a3 3 0 003-3V5a3 3 0 10-6 0v6a3 3 0 003 3z"></path>
+              <path d="M19 11a7 7 0 01-14 0H3a9 9 0 0018 0h-2z"></path>
+              <path d="M12 17v4m0 0h4m-4 0H8" stroke="white" stroke-width="2" stroke-linecap="round"></path>
+            </svg>
+          </button>
+
+          <textarea placeholder="Ask me anything..." class="search-input"></textarea>
+
+          <button class="search-btn" title="Search">
+            <!-- Search SVG -->
+            <svg height="24" width="24" fill="white" viewBox="0 0 24 24">
+              <path d="M21 21l-4.35-4.35M10 18a8 8 0 100-16 8 8 0 000 16z" stroke="white" stroke-width="2" fill="none"
+                stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+    <section id="Listen" class="">
+      <div>
+        <p class="listen-text">hello sir!</p>
+      </div>
+      <div id="siri-container"></div>
+    </section>
   </div>
-   
-  
-  
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+  <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script type="text/javascript" src="/eel.js"></script>
   <script src="main.js"></script>
   <script src="script.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lettering.js/0.7.0/jquery.lettering.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/textillate/0.4.0/jquery.textillate.js"></script> -->
+
+  <!-- jQuery first -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
+  <!-- Lettering and Textillate (depends on jQuery) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lettering.js/0.7.0/jquery.lettering.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/textillate/0.4.0/jquery.textillate.js"></script>
   
+  <!-- Eel must come before your main.js -->
+  <script type="text/javascript" src="/eel.js"></script>
+  
+  <!-- Your custom scripts -->
+  <script src="main.js"></script>
+  <script src="script.js"></script>
+
+
 </body>
+
 </html>
