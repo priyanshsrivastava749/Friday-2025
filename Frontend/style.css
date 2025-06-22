@@ -1,0 +1,203 @@
+*{
+  margin:0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body{
+  background-color: black;
+  overflow-y:hidden;
+  overflow-x: hidden;
+}
+#app-container{
+  height: 100%;
+  width:100%
+}
+#Home{
+  height: 100vh;
+  width:100vw;
+}
+
+.square{
+  width :400px;
+  height :400px;
+  position:relative;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+.square span:nth-child(1){
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(#6b72ff00 50%, #000dff3b 50%);
+  box-shadow: 0 0 50px rgb(25,25,255),inset 0 0 50px rgb(25,25,255);
+  border-radius:30% 60% 63% 37%/40% 45% 58% 60%;
+  transition:0.4s;
+  cursor: pointer;
+  animation: animate1 6s infinite linear;
+}
+.square span:nth-child(2){
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(#6b72ff00 50%, #000dff3b 50%);
+  box-shadow: 0 0 50px rgb(25,25,255),inset 0 0 50px rgb(25,25,255);
+  border-radius:30% 60% 63% 37%/40% 45% 58% 60%;
+  transition:0.4s;
+  cursor: pointer;
+  animation: animate2 4s infinite linear;
+}
+.square span:nth-child(3){
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(#6b72ff00 50%, #000dff3b 50%);
+  box-shadow: 0 0 50px rgb(25,25,255),inset 0 0 50px rgb(25,25,255);
+  border-radius:30% 60% 63% 37%/40% 45% 58% 60%;
+  transition:0.4s;
+  cursor: pointer;
+  animation: animate3 8s infinite linear;
+}
+
+
+@keyframes animate1 {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+}
+
+@keyframes animate2 {
+  0% {
+      transform: rotate(90deg);
+  }
+  100% {
+      transform: rotate(270deg);
+  }
+}
+
+@keyframes animate3 {
+  0% {
+      transform: rotate(90deg);
+  }
+  100% {
+      transform: rotate(180deg);
+  }
+}
+#jarvis-hood{
+  display:flex;
+  position:relative;
+  justify-content: center;
+  margin-top:3%;
+  align-items: center;
+  height:60%;
+  width:100%;
+}
+.jarvis-soul{
+  position: absolute;
+}
+#Home h1{
+  color: white;
+  text-align: center;
+  font-size:xx-large;
+  margin-top: 3.4%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Search Box Wrapper */
+.jarvis-ui {
+  display: flex;
+  justify-content: center;
+  margin-top: 5%;
+}
+
+/* Box styling */
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0, 0, 50, 0.3);
+  border: 1px solid #1e90ff;
+  padding: 12px 18px;
+  border-radius: 30px;
+  box-shadow: 0 0 10px #1e90ff;
+  transition: all 0.3s ease;
+}
+
+.search-box:hover {
+  box-shadow: 0 0 20px #1e90ff, 0 0 30px #1e90ff;
+}
+
+/* Textarea Input */
+.search-input {
+  background: transparent;
+  border: none;
+  color: white;
+  resize: none;
+  overflow: hidden;
+  font-size: 16px;
+  width: 260px;
+  height: 30px;
+  outline: none;
+  font-weight: bold;
+  padding: 5px;
+}
+
+/* Buttons (Mic & Search) */
+.search-btn,
+.mic-btn {
+  background: #1e90ff;
+  border: none;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: box-shadow 0.3s ease;
+}
+
+.search-btn:hover,
+.mic-btn:hover {
+  box-shadow: 0 0 10px #1e90ff, 0 0 20px #1e90ff;
+}
+
+/* Optional: SVG icon size */
+.search-btn svg,
+.mic-btn svg {
+  width: 20px;
+  height: 20px;
+}
+#Listen{
+  height:100vh;
+  width:100%;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+/* for the siri like waveform */
+#siri-container {
+  width: 100%;
+  display:flex;
+  justify-content: center;
+  height: 100px;
+  margin-top: 20px;
+}
+/* designing listen text */
+.listen-text{
+  color: white;
+  text-align: center;
+  font-size:xx-large;
+  margin-top: 3.4%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
