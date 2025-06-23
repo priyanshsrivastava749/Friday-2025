@@ -204,3 +204,57 @@ body{
 .invisible-section{
   display:none;
 }
+/* working code removed for testing purposes only */ 
+.listen-text {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-align: center;
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease-out;
+}
+
+@keyframes softBounceInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px); /* 👈 Just slightly below */
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-5px);
+  }
+  80% {
+    transform: translateY(3px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes softFadeOutDown {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+.softBounceInUp {
+  animation: softBounceInUp 0.8s ease-out forwards;
+}
+
+.softFadeOutDown {
+  animation: softFadeOutDown 1s ease-in forwards;
+}
+
+
+

@@ -13,8 +13,11 @@ def friday_main(queue: Queue):
         command = main.listen(2,1)
         if 'friday' in command.lower():
             main.speak("Yes Boss")
-            queue.put("show_listen")  # 💡 Send command to UI thread
-            command = main.listen(6,3) 
+            queue.put("show_listen")
+            queue.put("hello sir",2000)  # 💡 Send command to UI thread
+            command = main.listen(6,3)
+            print(f"📝 Sending to JS: {command}")
+            queue.put(command,)
             main.processCommand(command)
             queue.put("show_home")
         time.sleep(1)
@@ -22,17 +25,27 @@ def friday_main(queue: Queue):
 def start_ui(queue: Queue):
     eel.init('Frontend')
     eel.start('index.html', size=(500, 400), block=False)
-    # 👂 Listen to messages from backend
+
+    # ✅ Wait for JS to be ready
+    time.sleep(2)  # JS needs time to load eel.expose()
+
+    print("✅ UI Loop Started - Waiting for Messages...")
+
     while True:
         try:
             msg = queue.get_nowait()
             if msg == "show_listen":
                 eel.showSection("Listen")
             elif msg == "show_home":
-                eel.showSection("Home")  # ✅ Call exposed JS function
+                eel.showSection("Home")
+            elif isinstance(msg, str):
+                print(f"📨 UI got text to update: {msg}")
+                eel.updateListenText(msg)
+
         except:
             pass
         eel.sleep(0.1)
+
 
 if __name__ == '__main__':
     q = Queue()
@@ -48,3 +61,4 @@ if __name__ == '__main__':
     # Optional: Join processes if needed
     ui_process.join()
     backend_process.join()
+

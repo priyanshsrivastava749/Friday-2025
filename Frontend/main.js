@@ -28,34 +28,34 @@ $(document).ready(function () {
 
   loopText(); // start the loop
 });
+//listen wala text hai temporarily hataya hai
+// $(document).ready(function () {
+//   function loopText() {
+//     $(".listen-text").textillate({
+//       autoStart: false,
+//       in: {
+//         effect: "bounceIn",
+//         callback: function () {
+//           // Wait then start out
+//           setTimeout(function () {
+//             $(".listen-text").textillate("out");
+//           }, 1000); // how long to wait after in
+//         },
+//       },
+//       out: {
+//         effect: "bounceOut",
+//         callback: function () {
+//           // Reset and start again
+//           $(".listen-text").textillate("stop").textillate("in");
+//         },
+//       },
+//     });
 
-$(document).ready(function () {
-  function loopText() {
-    $(".listen-text").textillate({
-      autoStart: false,
-      in: {
-        effect: "bounceIn",
-        callback: function () {
-          // Wait then start out
-          setTimeout(function () {
-            $(".listen-text").textillate("out");
-          }, 1000); // how long to wait after in
-        },
-      },
-      out: {
-        effect: "bounceOut",
-        callback: function () {
-          // Reset and start again
-          $(".listen-text").textillate("stop").textillate("in");
-        },
-      },
-    });
+//     $(".listen-text").textillate("in"); // Start first time
+//   }
 
-    $(".listen-text").textillate("in"); // Start first time
-  }
-
-  loopText(); // start the loop
-});
+//   // loopText(); // start the loop
+// });
 
 //for siri like waveform
 
@@ -125,6 +125,32 @@ function showSection(sectionToShowId) {
 window.showSection = showSection;
 eel.expose(showSection);
 
-// Notify Python that JS is ready
-eel.expose(js_ready_ack);
-eel.js_ready_ack();
+function updateListenText(newText, holdDuration = 5000) {
+  console.log("📢 updateListenText called with:", newText);
+
+  const el = document.querySelector(".listen-text");
+  if (!el) return console.warn("❌ .listen-text not found");
+
+  // Apply text
+  el.innerText = newText;
+
+  // Reset animations
+  el.classList.remove("softFadeOutDown");
+  el.style.opacity = 1;
+  el.style.transform = "translateY(20px)"; // reset slight offset
+  void el.offsetWidth; // force reflow
+
+  // Animate in
+  el.classList.add("softBounceInUp");
+
+  // Animate out after holdDuration
+  setTimeout(() => {
+    el.classList.remove("softBounceInUp");
+    el.classList.add("softFadeOutDown");
+  }, holdDuration);
+}
+
+// Expose function to Python
+window.updateListenText = updateListenText;
+eel.expose(updateListenText);
+
