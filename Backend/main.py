@@ -15,7 +15,7 @@ music = {
 }
 
 
-question = ["what","how","when","where","tell me","can you","who"]
+question = ["what","how","when","where","tell me","can you","why","who"]
 engine = pyttsx3.init()
 newsapi = "44c6abf73f304d4c9e8297817de4834c"
 voices = engine.getProperty('voices')
@@ -85,42 +85,43 @@ def close_process_with_grace(process_name, wait_seconds=5):
 def processCommand(command):
     print(command)
     if("open google"in command.lower()):
-        speak(f"opening {command.split(" ")[1]}")
         webbrowser.open("https://google.com")
+        return f"opening {command.split(' ')[1]}"
     elif("open facebook" in command.lower()):
-        speak(f"opening {command.split(" ")[1]}")
         webbrowser.open("https://facebook.com")
+        return f"opening {command.split(' ')[1]}"
     elif("open chat gpt" in command.lower()):
-        speak(f"opening {command.split(" ")[1]}")
         webbrowser.open("https://chatgpt.com/")
+        return f"opening {command.split(' ')[1]}" 
     elif("open github"  in command.lower()):
-        speak(f"opening {command.split(" ")[1]}")
         webbrowser.open("https://github.com")
+        return f"opening {command.split(' ')[1]}"
     elif("open linkedin"in command.lower()):
-        speak(f"opening {command.split(" ")[1]}")
         webbrowser.open("https://linkedin.com")
+        return f"opening {command.split(' ')[1]}"
     elif("open youtube"in command.lower()):
-        speak(f"opening {command.split(" ")[1]}")
         webbrowser.open("https://youtube.com")
+        return f"opening {command.split(' ')[1]}"
     elif("open portfolio"in command.lower()):
-        speak(f"opening your {command.split(" ")[1]}")
         webbrowser.open_new_tab("https://helpful-elf-967c0f.netlify.app/")
+        return f"opening your {command.split(' ')[1]}"
     elif("open whatsapp"in command.lower()):
-        speak(f"opening your {command.split(" ")[1]}")
         subprocess.run(["start", "whatsapp:"], shell=True)
+        return f"opening your {command.split(' ')[1]}"
     elif("close browser"in command.lower()):
-        speak(f"closing {command.split(" ")[1]}")
         close_process_with_grace("brave.exe", wait_seconds=5)
+        return f"closing {command.split(' ')[1]}"
     elif("close whatsapp"in command.lower()):
-        speak(f"closing {command.split(" ")[1]}")
         close_process_with_grace("WhatsApp.exe", wait_seconds=5)
+        return f"closing {command.split(' ')[1]}"
     elif command.lower().startswith("play"):
          try:
-            song = command.lower().split(" ")[1]
+            song = command.lower().split(' ')[1]
             link = music[song]
             webbrowser.open(link)
+            return f"playing {song}"
          except KeyError:
-             speak("Sorry sir,I Dont have this song in my library")
+             return "Sorry sir,I Dont have this song in my library"
     elif "news" in command.lower():
         r =  requests.get(f"https://newsapi.org/v2/top-headlines?country=us&apiKey={newsapi}")
         if r.status_code == 200:
@@ -129,9 +130,11 @@ def processCommand(command):
             for article in articles:
                 speak(article['title']) 
     else:
-      for word in question:
-        if word in command:
-              answer = ask_local_llm(command)
-              speak(clear_response(answer))
+        command_lower = command.lower()
+        for word in question:
+            if word in command_lower:
+                print("control is in the else block of the process command")
+                answer = ask_local_llm(command)
+                speak(clear_response(answer))
       
         

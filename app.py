@@ -14,11 +14,23 @@ def friday_main(queue: Queue):
         if 'friday' in command.lower():
             main.speak("Yes Boss")
             queue.put("show_listen")
-            queue.put("hello sir",2000)  # 💡 Send command to UI thread
+            queue.put({ "type": "text_update", "text": "🎤 Friday is listening...", "hold": 4000 })# 💡 Send command to UI thread
             command = main.listen(6,3)
+            word_count = len(command.split())
+            estimated_time = word_count / 1.5
+            print(f"estimated time  to the given command is {estimated_time} seconds")
             print(f"📝 Sending to JS: {command}")
-            queue.put(command,)
-            main.processCommand(command)
+            queue.put({ "type": "text_update", "text": command, "hold": estimated_time })
+            result = main.processCommand(command)
+            if not result:
+               result = "Sorry, no response received."
+            word_count = len(result.split())
+            estimated_time = word_count / 1.5
+            print(f"estimated time is {estimated_time} seconds")
+            queue.put({ "type": "text_update", "text": result, "hold": estimated_time })
+            time.sleep(estimated_time+1)
+            if(result != "Sorry, no response received."):
+                main.speak(result)
             queue.put("show_home")
         time.sleep(1)
 
@@ -38,9 +50,17 @@ def start_ui(queue: Queue):
                 eel.showSection("Listen")
             elif msg == "show_home":
                 eel.showSection("Home")
+            # elif isinstance(msg, str):
+            #     print(f"📨 UI got text to update: {msg}")
+            #     eel.updateListenText(msg)
+            elif isinstance(msg, dict) and msg.get("type") == "text_update":
+                text = msg.get("text", "")
+                hold = msg.get("hold", 5000)
+                print(f"📨 Dict message: {text} | Hold: {hold}")
+                eel.updateListenText(text, hold)
             elif isinstance(msg, str):
-                print(f"📨 UI got text to update: {msg}")
-                eel.updateListenText(msg)
+                print(f"📨 String message: {msg}")
+                eel.updateListenText(msg)  # fallback default 5 sec
 
         except:
             pass

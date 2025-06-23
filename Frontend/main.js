@@ -131,24 +131,26 @@ function updateListenText(newText, holdDuration = 5000) {
   const el = document.querySelector(".listen-text");
   if (!el) return console.warn("❌ .listen-text not found");
 
-  // Apply text
+  // Step 1: Apply text and clear any animations
   el.innerText = newText;
-
-  // Reset animations
-  el.classList.remove("softFadeOutDown");
   el.style.opacity = 1;
-  el.style.transform = "translateY(20px)"; // reset slight offset
-  void el.offsetWidth; // force reflow
+  el.style.transform = "translateY(20px)";
+  el.classList.remove("softBounceInUp", "softFadeOutDown");
 
-  // Animate in
+  // Step 2: Force DOM reflow to reset animation
+  void el.offsetWidth;
+
+  // Step 3: Trigger entry animation
   el.classList.add("softBounceInUp");
 
-  // Animate out after holdDuration
+  // Step 4: Exit animation after holdDuration
   setTimeout(() => {
     el.classList.remove("softBounceInUp");
+    void el.offsetWidth; // again reflow
     el.classList.add("softFadeOutDown");
   }, holdDuration);
 }
+
 
 // Expose function to Python
 window.updateListenText = updateListenText;
