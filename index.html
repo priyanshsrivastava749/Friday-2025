@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friday Voice Assistant | Presentation</title>
+    <!-- High-tech fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #030712;
+            --panel-bg: rgba(17, 24, 39, 0.7);
+            --primary-cyan: #06b6d4;
+            --primary-blue: #3b82f6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glow-cyan: 0 0 20px rgba(6, 182, 212, 0.5);
+            --glow-blue: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow: hidden;
+            /* Prevent body scroll, handle in slides */
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(6, 182, 212, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.08), transparent 25%);
+            background-attachment: fixed;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* --- Presentation Logic --- */
+        #slider-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        .slide {
+            flex: 0 0 100vw;
+            width: 100vw;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 80px 5% 100px 5%;
+            /* Bottom padding for controls */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide-content {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Animation Classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .slide.active .reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Staggered animations */
+        .slide.active .delay-1 {
+            transition-delay: 0.1s;
+        }
+
+        .slide.active .delay-2 {
+            transition-delay: 0.2s;
+        }
+
+        .slide.active .delay-3 {
+            transition-delay: 0.3s;
+        }
+
+        .slide.active .delay-4 {
+            transition-delay: 0.4s;
+        }
+
+        /* --- Controls --- */
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 50px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), var(--glow-cyan);
+        }
+
+        .ctrl-btn {
+            background: transparent;
+            border: none;
+            color: var(--primary-cyan);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .ctrl-btn:hover:not(:disabled) {
+            color: #fff;
+            background: rgba(6, 182, 212, 0.2);
+            transform: scale(1.1);
+        }
+
+        .ctrl-btn:disabled {
+            color: rgba(255, 255, 255, 0.1);
+            cursor: not-allowed;
+        }
+
+        #slide-counter {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            letter-spacing: 2px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        /* --- Glassmorphism Panels --- */
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* --- Layouts & Grids --- */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        /* --- Typography --- */
+        .hero-title {
+            font-size: 5.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--primary-cyan), var(--primary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: var(--glow-cyan);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .hero-subtitle {
+            font-size: 2rem;
+            color: var(--text-muted);
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            color: #fff;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -10px;
+            width: 60%;
+            height: 3px;
+            background: var(--primary-cyan);
+            box-shadow: var(--glow-cyan);
+        }
+
+        .lead-text {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        /* --- Components --- */
+        .student-badge {
+            display: inline-flex;
+            gap: 30px;
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid var(--primary-cyan);
+            padding: 20px 40px;
+            border-radius: 50px;
+            box-shadow: var(--glow-cyan);
+            justify-content: center;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+
+        .student-badge div {
+            text-align: left;
+        }
+
+        .student-badge span {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--primary-cyan);
+            text-transform: uppercase;
+        }
+
+        .student-badge strong {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+        }
+
+        .image-wrapper {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(6, 182, 212, 0.2);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            height: 100%;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            display: block;
+        }
+
+        .overlay-gradient {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(6, 182, 212, 0.2), transparent);
+            pointer-events: none;
+        }
+
+        /* Cards */
+        .feature-card {
+            border-radius: 15px;
+            padding: 30px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-cyan);
+            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.1);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.05;
+            z-index: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .feature-card:hover::before {
+            opacity: 0.15;
+        }
+
+        .feature-card * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(6, 182, 212, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary-cyan);
+            margin-bottom: 20px;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .feature-card p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        /* Architecture Nodes */
+        .arch-node {
+            background: rgba(17, 24, 39, 0.9);
+            border: 2px solid var(--primary-blue);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            box-shadow: var(--glow-blue);
+        }
+
+        .arch-node i {
+            font-size: 3rem;
+            color: var(--primary-cyan);
+            margin-bottom: 15px;
+        }
+
+        /* Custom Code Blocks */
+        code {
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--primary-cyan);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+
+        .bg-slide-1 {
+            background: radial-gradient(circle at center, rgba(3, 7, 18, 0.8), #030712), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1920') center/cover;
+        }
+
+        @media (max-width: 1024px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .hero-title {
+                font-size: 3.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.5rem;
+            }
+
+            .slide {
+                padding: 40px 5% 100px 5%;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="slider-container">
+
+        <!-- SLIDE 1: Title -->
+        <div class="slide bg-slide-1">
+            <div class="slide-content" style="text-align: center;">
+                <h1 class="hero-title reveal delay-1">F.R.I.D.A.Y.</h1>
+                <h2 class="hero-subtitle reveal delay-2">Voice Assistant Architecture SRS</h2>
+
+                <div class="student-badge reveal delay-3">
+                    <div><span>Developer</span><strong>Monu Kumar</strong></div>
+                    <div><span>Roll No</span><strong>23514</strong></div>
+                    <div><span>Reg No</span><strong>23105108060</strong></div>
+                    <div><span>Version</span><strong>3.0 (Extended)</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: Product Scope & Vision -->
+        <div class="slide">
+            <div class="slide-content grid-2">
+                <div class="image-wrapper reveal delay-1" style="box-shadow: var(--glow-cyan);">
+                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1920"
+                        alt="Cyber Eye">
+                    <div class="overlay-gradient"></div>
+                </div>
+                <div class="glass-panel reveal delay-2">
+                    <h2 class="section-title">01. Product Scope</h2>
+                    <p class="lead-text">
+                        The Friday Voice Assistant is a highly specialized, interactive desktop voice agent engineered
+                        fundamentally upon Python computational logics and paired seamlessly with a responsive
+                        HTML5/JavaScript user interface utilizing the Eel library.
+                    </p>
+                    <p class="lead-text">
+                        Unlike fully cloud-reliant virtual assistants (Alexa, Siri), Friday is tailored to emphasize
+                        robust local hardware integration while simultaneously employing a sophisticated locally hosted
+                        Large Language Model.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: Operating Environment -->
+        <div class="slide">
+            <div class="slide-content">
+                <div style="text-align: center; margin-bottom: 50px;">
+                    <h2 class="section-title reveal delay-1">02. Operating Environment</h2>
+                    <p class="lead-text reveal delay-2">Hardware & Software pre-conditions for optimal 60FPS UI and LLM
+                        inference.</p>
+                </div>
+
+                <div class="feature-grid reveal delay-3">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fa-brands fa-windows"></i></div>
+                        <h3>Windows OS Baseline</h3>
+                        <p>Requires Windows 10/11 Architecture. Non-negotiable for task management paradigms utilizing
+                            specific OS registry commands like <code>taskkill /IM</code>.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-memory"></i></div>
+                        <h3>System RAM Buffer</h3>
+                        <p>Requires >8 GB of System RAM to permit simultaneous caching of open-source weights associated
+                            with Llama 3.2 inside host RAM/VRAM.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-microchip"></i></div>
+                        <h3>Multi-thread CPU</h3>
+                        <p>Essential for maintaining 60 FPS in Javascript concurrently alongside synchronous Python
+                            polling loops without Application Not Responding (ANR) lockups.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: Dual Process Architecture -->
+        <div class="slide">
+            <div class="slide-content">
+                <div style="text-align: center; margin-bottom: 50px;">
+                    <h2 class="section-title reveal delay-1">03. Dual-Process Architecture</h2>
+                    <p class="lead-text reveal delay-2" style="max-width: 900px; margin: 0 auto;">To avoid Python's GIL
+                        throttling rendering capabilities, the system instantiates independent OS processes employing
+                        the <code>multiprocessing</code> library.</p>
+                </div>
+
+                <div class="grid-2 reveal delay-3" style="gap: 20px;">
+                    <div class="arch-node" style="border-color: var(--primary-cyan);">
+                        <i class="fa-brands fa-python" style="color: var(--primary-cyan);"></i>
+                        <h3>Backend Process</h3>
+                        <p><code>target=friday_main, args=(q,)</code></p>
+                        <p style="margin-top: 10px;">Operates totally headless. Manages microphone polling, STT via
+                            Google, Llama routing, and subprocess execution.</p>
+                    </div>
+
+                    <div class="arch-node" style="border-color: #8b5cf6;">
+                        <i class="fa-solid fa-code" style="color: #8b5cf6;"></i>
+                        <h3 style="color: #8b5cf6;">UI Process (Eel)</h3>
+                        <p><code>target=start_ui, args=(q,)</code></p>
+                        <p style="margin-top: 10px;">Spawns isolated Webkit renderer. Runs an infinite receiver loop
+                            <code>queue.get_nowait()</code> mapping visual mutation intents.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: The Interface (Using the provided Image) -->
+        <div class="slide">
+            <div class="slide-content grid-2">
+                <div class="glass-panel reveal delay-1">
+                    <h2 class="section-title">04. Graphical UI</h2>
+                    <p class="lead-text">
+                        A borderless "HUD" paradigm natively measuring 500x400 pixels, powered by HTML5 Canvas.
+                    </p>
+                    <ul style="list-style: none;">
+                        <li style="margin-bottom: 20px;">
+                            <strong style="color: var(--primary-cyan); font-size: 1.2rem; display:block;">Spherical
+                                Particle View</strong>
+                            <span style="color: var(--text-muted);">Calculates 3D positions across trigonometric
+                                matrices (Cosine rotations, Alpha depth) generating a glowing immersive orb.</span>
+                        </li>
+                        <li>
+                            <strong style="color: var(--primary-blue); font-size: 1.2rem; display:block;">Active
+                                SiriWave</strong>
+                            <span style="color: var(--text-muted);">Natively parses
+                                <code>analyser.getByteFrequencyData</code> updating amplitudes synchronously to user
+                                environmental noises.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="image-wrapper reveal delay-2" style="border-color: var(--primary-cyan);">
+                    <img src="image_b7edbb.jpg" alt="Friday Interface Screenshot">
+                    <div class="overlay-gradient"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: IPC & State Management -->
+        <div class="slide">
+            <div class="slide-content">
+                <div style="text-align: center; margin-bottom: 50px;">
+                    <h2 class="section-title reveal delay-1">05. IPC & State Tracking</h2>
+                </div>
+
+                <div class="grid-2 reveal delay-2">
+                    <div class="glass-panel">
+                        <h3 style="color: var(--primary-cyan); margin-bottom: 15px;">Inter-Process Communication</h3>
+                        <p class="lead-text">Uses <code>multiprocessing.Queue</code>. The logic layer pushes explicit
+                            control objects via <code>queue.put()</code>.</p>
+                        <p class="lead-text" style="margin-top: 15px;"><strong>Format 1: Strings</strong><br>e.g.,
+                            <code>"show_listen"</code> -> Native DOM toggle.
+                        </p>
+                        <p class="lead-text" style="margin-top: 15px;"><strong>Format 2:
+                                Dictionaries</strong><br><code>{"type": "text_update", "text": result, "hold": time}</code>
+                        </p>
+                    </div>
+
+                    <div class="glass-panel" style="border-top-color: var(--primary-blue);">
+                        <h3 style="color: var(--primary-blue); margin-bottom: 15px;">Pseudo-State Tracking</h3>
+                        <p class="lead-text">State is transient. To prevent user boredom during heavy local LLM queries,
+                            Friday implements a mathematical visual hold.</p>
+                        <div
+                            style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 10px; margin-top: 15px; border-left: 3px solid var(--primary-blue);">
+                            <code style="background:transparent; border:none;">estimated_time = word_count / 1.5</code>
+                        </div>
+                        <p class="lead-text" style="font-size: 0.9rem; margin-top: 15px;">Forces the UI text to hold its
+                            CSS BounceInUp state exactly long enough to simulate thinking.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: STT & LLM Pipeline -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="section-title reveal delay-1"
+                    style="text-align: center; display: block; margin-bottom: 50px;">06. NLP & Local LLM Engine</h2>
+
+                <div class="feature-grid reveal delay-2">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-ear-listen"></i></div>
+                        <h3>Google STT Matrix</h3>
+                        <p>Continuous microphone polling on an infinite while loop. Isolates the specific string
+                            <code>"friday"</code> with a strict 2-second timeout.
+                        </p>
+                    </div>
+                    <div class="feature-card" style="border-color: var(--primary-cyan);">
+                        <div class="feature-icon" style="background: rgba(6, 182, 212, 0.2);"><i
+                                class="fa-solid fa-server"></i></div>
+                        <h3>Local Ollama Endpoint</h3>
+                        <p>HTTP POST Operations directly to <code>http://localhost:11434/api/generate</code>, ensuring
+                            zero PII data leaks to cloud architectures.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-microchip"></i></div>
+                        <h3>Llama 3.2 Inference</h3>
+                        <p>Queries prefixed with ["how", "tell me", "can you", "why"] route directly to
+                            <code>llama3.2:latest</code>. Uses Regex to strip Markdown logic for clean TTS output.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: OS Execution Control -->
+        <div class="slide">
+            <div class="slide-content grid-2">
+                <div class="glass-panel reveal delay-1"
+                    style="background: #000; border-top-color: #ef4444; box-shadow: 0 0 20px rgba(239,68,68,0.2);">
+                    <div style="display:flex; gap:10px; margin-bottom: 20px;">
+                        <div style="width:12px; height:12px; border-radius:50%; background:#ef4444;"></div>
+                        <div style="width:12px; height:12px; border-radius:50%; background:#eab308;"></div>
+                        <div style="width:12px; height:12px; border-radius:50%; background:#22c55e;"></div>
+                    </div>
+                    <h3 style="color: #ef4444; margin-bottom: 10px; font-family: monospace;">> OS Shell Execution
+                        Control</h3>
+                    <p style="color: #a3e635; font-family: monospace; font-size: 1.1rem; line-height: 1.8;">
+                        [PROCESS] Triggering Application Teardown...<br>
+                        > subprocess.run(["taskkill", "/IM", "whatsapp.exe"])<br>
+                        [WAIT] time.sleep(wait_seconds)<br>
+                        > subprocess.run(["taskkill", "/F", "/IM", "whatsapp.exe"])<br>
+                        [SUCCESS] Process Terminated Gracefully.
+                    </p>
+                </div>
+
+                <div class="glass-panel reveal delay-2">
+                    <h2 class="section-title" style="font-size: 2.5rem;">07. Desktop Automation</h2>
+                    <p class="lead-text">
+                        Providing primary productivity capabilities natively, vocal requests trigger
+                        <code>subprocess.run</code> implementations handling precise Windows OS commands.
+                    </p>
+                    <p class="lead-text">
+                        <strong>Graceful Teardown:</strong> close_process_with_grace handles termination hierarchically,
+                        initiating soft kills before enforcing rigorous forced hard kills resolving completely.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: Web & News APIs -->
+        <div class="slide">
+            <div class="slide-content grid-2">
+                <div class="glass-panel reveal delay-1">
+                    <h2 class="section-title">08. Network APIs</h2>
+                    <p class="lead-text">Enhancing environmental integrations beyond local files.</p>
+
+                    <h3 style="color: var(--primary-cyan); margin-top: 20px;">Media Direct Mapping</h3>
+                    <p class="lead-text" style="font-size: 1rem;">Bypasses heavy YouTube API schemas using a static
+                        dictionary: <code>{"song": "https://youtu.be/..."}</code> and executes via the python
+                        <code>webbrowser</code> library.
+                    </p>
+
+                    <h3 style="color: var(--primary-blue); margin-top: 20px;">NewsAPI Integration</h3>
+                    <p class="lead-text" style="font-size: 1rem;">Fetches live JSON payloads routing toward
+                        <code>newsapi.org/v2/top-headlines</code>, iterating dynamically across the standard top-level
+                        <code>['articles']</code> nodes.
+                    </p>
+                </div>
+
+                <div class="image-wrapper reveal delay-2">
+                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1000"
+                        alt="Global Network">
+                    <div class="overlay-gradient"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: Non-Functional Requirements -->
+        <div class="slide">
+            <div class="slide-content">
+                <div style="text-align: center; margin-bottom: 50px;">
+                    <h2 class="section-title reveal delay-1">09. Non-Functional Constraints</h2>
+                </div>
+
+                <div class="feature-grid reveal delay-2">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-stopwatch"></i></div>
+                        <h3>Latency Bounds</h3>
+                        <p>Audio detection matrices must cleanly abstract environmental noise natively staying within
+                            500-1200 millisecond time-boxes parsing STT endpoints.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                        <h3>Security Posture</h3>
+                        <p>Offline LLM modeling guarantees user prompts natively avoid uploading PII (Personally
+                            Identifiable Information) to cloud architectures.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <h3>Fault Tolerance</h3>
+                        <p>Generic Exception handling (<code>try except KeyError:</code>) bypasses total system crashing
+                            constraints, safely falling back to TTS apologies.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 11: Use Case Walkthrough -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="section-title reveal delay-1" style="margin-bottom: 40px;">10. Workflow Execution</h2>
+
+                <div class="glass-panel reveal delay-2" style="padding: 0; overflow: hidden;">
+                    <div
+                        style="display: flex; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <div
+                            style="flex:1; padding: 20px; text-align:center; font-weight:bold; color: var(--primary-cyan);">
+                            1. Trigger Condition</div>
+                        <div
+                            style="flex:1; padding: 20px; text-align:center; font-weight:bold; color: var(--primary-blue); border-left: 1px solid rgba(255,255,255,0.1);">
+                            2. Intermediate Parse</div>
+                        <div
+                            style="flex:1; padding: 20px; text-align:center; font-weight:bold; color: #a3e635; border-left: 1px solid rgba(255,255,255,0.1);">
+                            3. Execution Logic</div>
+                    </div>
+
+                    <!-- Row 1 -->
+                    <div style="display: flex; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <div style="flex:1; padding: 20px;"><strong style="color:#fff;">"Friday"</strong><br>Mic
+                            captures hot-word within timeout constraint.</div>
+                        <div style="flex:1; padding: 20px; border-left: 1px solid rgba(255,255,255,0.05);">Google STT
+                            maps string. IPC pushes <code>"show_listen"</code> to Queue.</div>
+                        <div style="flex:1; padding: 20px; border-left: 1px solid rgba(255,255,255,0.05);">DOM updates
+                            cleanly. SiriWave renders.</div>
+                    </div>
+
+                    <!-- Row 2 -->
+                    <div
+                        style="display: flex; border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(255,255,255,0.02);">
+                        <div style="flex:1; padding: 20px;"><strong style="color:#fff;">"Open
+                                Github"</strong><br>Matches sandboxed command array.</div>
+                        <div style="flex:1; padding: 20px; border-left: 1px solid rgba(255,255,255,0.05);">Bypasses LLM.
+                            Prioritizes local execution speeds flawlessly.</div>
+                        <div style="flex:1; padding: 20px; border-left: 1px solid rgba(255,255,255,0.05);">Python
+                            <code>webbrowser</code> triggers default HTTP executable.
+                        </div>
+                    </div>
+
+                    <!-- Row 3 -->
+                    <div style="display: flex;">
+                        <div style="flex:1; padding: 20px;"><strong style="color:#fff;">"How do stars
+                                form?"</strong><br>Matches interrogative pre-filter.</div>
+                        <div style="flex:1; padding: 20px; border-left: 1px solid rgba(255,255,255,0.05);">POST payload
+                            sent to local <code>llama3.2:latest</code>. UI sets bounce hold.</div>
+                        <div style="flex:1; padding: 20px; border-left: 1px solid rgba(255,255,255,0.05);">Regex clears
+                            Markdown. pyttsx3 initiates TTS stream.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 12: Conclusion -->
+        <div class="slide">
+            <div class="slide-content" style="text-align: center;">
+                <h1 class="hero-title reveal delay-1" style="font-size: 4rem;">System Initialization Complete</h1>
+                <p class="lead-text reveal delay-2" style="max-width: 800px; margin: 0 auto 50px auto;">
+                    This massive specification completely defines structurally defining correctly mapping elegantly
+                    identifying beautifully securely modeling deeply targeting environments tracking completely.
+                </p>
+
+                <div class="glass-panel reveal delay-3"
+                    style="display: inline-block; padding: 30px 60px; border-color: #22c55e;">
+                    <i class="fa-solid fa-check-circle"
+                        style="font-size: 3rem; color: #22c55e; margin-bottom: 15px;"></i>
+                    <h3 style="color: #fff; font-size: 1.5rem;">Status: Ready for Deployment</h3>
+                    <p style="color: var(--text-muted); margin-top: 10px;">SRS Version 3.0 | Academic Validation
+                        Verified</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Presentation Navigation Controls -->
+    <div class="controls">
+        <button class="ctrl-btn" id="prev-btn" title="Previous Slide (Left Arrow)"><i
+                class="fa-solid fa-chevron-left"></i></button>
+        <div id="slide-counter">01 / 12</div>
+        <button class="ctrl-btn" id="next-btn" title="Next Slide (Right Arrow)"><i
+                class="fa-solid fa-chevron-right"></i></button>
+    </div>
+
+    <!-- Javascript Slider Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slider = document.getElementById('slider-container');
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const counter = document.getElementById('slide-counter');
+
+            let currentSlide = 0;
+            const totalSlides = slides.length;
+
+            function updateSlider() {
+                // Move track
+                slider.style.transform = `translateX(-${currentSlide * 100}vw)`;
+
+                // Update counter text
+                counter.innerText = `${(currentSlide + 1).toString().padStart(2, '0')} / ${totalSlides}`;
+
+                // Button states
+                prevBtn.disabled = currentSlide === 0;
+                nextBtn.disabled = currentSlide === totalSlides - 1;
+
+                // Handle animations
+                slides.forEach((slide, index) => {
+                    if (index === currentSlide) {
+                        slide.classList.add('active');
+                    } else {
+                        // Optional: remove class to reset animations when off-screen
+                        slide.classList.remove('active');
+                    }
+                });
+            }
+
+            // Button Event Listeners
+            nextBtn.addEventListener('click', () => {
+                if (currentSlide < totalSlides - 1) {
+                    currentSlide++;
+                    updateSlider();
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    updateSlider();
+                }
+            });
+
+            // Keyboard Event Listener
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === ' ') {
+                    if (currentSlide < totalSlides - 1) {
+                        currentSlide++;
+                        updateSlider();
+                    }
+                } else if (e.key === 'ArrowLeft') {
+                    if (currentSlide > 0) {
+                        currentSlide--;
+                        updateSlider();
+                    }
+                }
+            });
+
+            // Initialize
+            updateSlider();
+        });
+    </script>
+</body>
+
+</html>
